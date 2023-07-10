@@ -4,7 +4,7 @@ import json
 
 org_url = https://dev.azure.com/blue-infosys/CAR%20Intern%20Project%20Automation%20Playground
 
-
+# Work item ID and desired status
 work_item_id = 407579
 status = "Done"
 
