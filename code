@@ -1,0 +1,38 @@
+import requests
+import json
+
+# Azure DevOps organization URL and personal access token (PAT)
+org_url = "https://dev.azure.com/your-organization [dev.azure.com]"
+pat = "your-personal-access-token"
+
+# Work item ID and desired status
+work_item_id = 1234
+status = "Done"
+
+# API endpoint for updating work items
+api_endpoint = f"{org_url}/_apis/wit/workitems/{work_item_id}?api-version=6.0"
+
+# Request headers
+headers = {
+    "Content-Type": "application/json-patch+json",
+    "Authorization": f"Bearer {pat}"
+}
+
+# JSON payload to update work item status
+payload = [
+    {
+        "op": "add",
+        "path": "/fields/System.State",
+        "value": status
+    }
+]
+
+# Send PATCH request to update work item
+response = requests.patch(api_endpoint, headers=headers, data=json.dumps(payload))
+
+# Check if the update was successful
+if response.status_code == 200:
+    print("Work item status updated successfully.")
+else:
+    print("Failed to update work item status.")
+    print(f"Error message: {response.text}")
