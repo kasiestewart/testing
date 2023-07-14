@@ -1,37 +1,30 @@
-import requests
-import json
 
+# azure-pipelines.yml
 
-org_url = https://dev.azure.com/blue-infosys/CAR%20Intern%20Project%20Automation%20Playground
+trigger:
+  branches:
+    include:
+      - main
 
-# Work item ID and desired status
-work_item_id = 407579
-status = "Done"
+jobs:
+  - job: TriggerTasks
+    displayName: 'Trigger Tasks'
+    steps:
+      - script: |
 
-# API endpoint for updating work items
-api_endpoint = f"{org_url}/_apis/wit/workitems/{work_item_id}?api-version=6.0"
+          # Check if tasks are completed
+          if tasks_completed:
+            echo "All tasks are completed."
+            - script: |
+                echo "Marking tasks as done..."
+                az devops work item update --id 123 --fields "System.State=Closed"
+              displayName: 'Mark Tasks as Done'
+          else:
+            echo "Tasks are not completed. Going back to previous step."
+            # Go back to previous step
+            - script: |
+                echo "Going back to previous step..."
+                bash path/to/previous-step.sh
+              displayName: 'Go Back to Previous Step'
 
-# Request headers
-headers = {
-    "Content-Type": "application/json-patch+json",
-    "Authorization": f"Bearer {pat}"
-}
-
-# JSON payload to update work item status
-payload = [
-    {
-        "op": "add",
-        "path": "/fields/System.State",
-        "value": status
-    }
-]
-
-# Send PATCH request to update work item
-response = requests.patch(api_endpoint, headers=headers, data=json.dumps(payload))
-
-# Check if the update was successful
-if response.status_code == 200:
-    print("Work item status updated successfully.")
-else:
-    print("Failed to update work item status.")
-    print(f"Error message: {response.text}")
+        displayName: 'Check Task Completion'
